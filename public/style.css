@@ -99,8 +99,6 @@ video {
     padding-top: 5px;
     color: #F5F5F5;
     text-align: center;
-    display: flex;
-    justify-content: space-between;
 }
 
 .main__chat_window {

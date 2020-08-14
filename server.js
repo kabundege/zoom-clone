@@ -1,5 +1,10 @@
 const app =  require('./app');
-const server = require('http').createServer(app);
+const fs = require('fs');
+const opt = {
+    key: fs.readFileSync('./security/cert.key'),
+    cert: fs.readFileSync('./security/cert.pem')
+}
+const server = require('https').createServer(opt,app);
 const io = require('socket.io')(server);
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
