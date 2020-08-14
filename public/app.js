@@ -17,6 +17,9 @@ myPeer.on('open',id=>{
 })
 
 socket.on('user-disconnected',userId=>{
+    const sender = document.querySelector('#UserName').value !== '' ? 
+                    `${document.querySelector('#UserName').value} 🙋` : 'a participant 🙋'
+    socket.emit('message',{sender,message: ' left '});
     if(peers[userId]) peers[userId].close();
 })
  
@@ -51,6 +54,8 @@ const shareScreen = () =>{
 //////
 
 document.addEventListener('DOMContentLoaded',()=>{
+    setInterval(()=>document.querySelector('#typerEvent').textContent ='',3000)
+
     navigator.mediaDevices.getUserMedia({
         audio:true,video:true
     }).then(stream => handlerPeer(stream));
@@ -145,6 +150,13 @@ const leaveMeeting = () => {
     }
 }
 
+// emojies
+
+const insert = (emojie) =>{
+    document.querySelector('#chatMessage').value += emojie;
+}
+
+
 //messages handler
 
 document.querySelector('#chatMessage').addEventListener('input',()=>{
@@ -154,8 +166,6 @@ document.querySelector('#chatMessage').addEventListener('input',()=>{
     socket.emit('typing',author);
 
 })
-
-setInterval(()=>document.querySelector('#typerEvent').textContent ='',3000)
 
 socket.on('typing',author=>{
     document.querySelector('#typerEvent').innerHTML 

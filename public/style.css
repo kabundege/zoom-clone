@@ -13,12 +13,12 @@
     text-align: center;
 }
 
-#chk{
-    position: absolute;
-    visibility: hidden;
-    z-index: -111;
-    }
-
+#emojis span:hover{
+    cursor: pointer;
+    background: rgb(68, 68, 68);
+    margin: 2px;
+    border-radius: 5px;
+}
 video {
     background: lightgrey;
     width: 100%;

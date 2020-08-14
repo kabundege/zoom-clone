@@ -17,6 +17,9 @@ myPeer.on('open',id=>{
 })
 
 socket.on('user-disconnected',userId=>{
+    const sender = document.querySelector('#UserName').value !== '' ? 
+                    `${document.querySelector('#UserName').value} 🙋` : 'a participant 🙋'
+    socket.emit('message',{sender,message: ' left '});
     if(peers[userId]) peers[userId].close();
 })
  
@@ -24,7 +27,7 @@ let myVideoStream;
 
 const handlerPeer = async (stream)=>{
     myVideoStream = stream;
-
+        
     addVideo(myvideo,stream);
     
     myPeer.on('call',call=>{
@@ -51,53 +54,33 @@ const shareScreen = () =>{
 //////
 
 document.addEventListener('DOMContentLoaded',()=>{
-    if (navigator.getDisplayMedia) {
-        return navigator.getDisplayMedia({
-            video: true,
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                sampleRate: 44100
-              }
-            }
-        ).then(stream => handlerPeer(stream));
-      } else if (navigator.mediaDevices.getDisplayMedia) {
-        return navigator.mediaDevices.getDisplayMedia({
-            video: true,
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                sampleRate: 44100
-              }
-            }
-        ).then(stream => handlerPeer(stream));
-      } else {
-        return navigator.mediaDevices.getUserMedia({
-            video: {mediaSource: 'screen'},
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                sampleRate: 44100
-              }
-            }
-        ).then(stream => handlerPeer(stream));
-      }
+    setInterval(()=>document.querySelector('#typerEvent').textContent ='',3000)
+
+    navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+        }
+    ).then(stream => handlerPeer(stream));
 })
 
 //////////
 
 const connetNewUser = (userId,stream) =>{
     const call = myPeer.call(userId,stream);
-
-    const video = document.createElement('video');
-    video.setAttribute('controls','true');
+    
+    const video = document.createElement('video')
+    video.setAttribute('controls','true')
 
     call.on('stream',userStream=>{
         addVideo(video,userStream);
     })
+
+    document.querySelector('#newUserAudio').play()
+
     call.on('close',()=> {
-        video.remove();
+        video.remove()
     })
+
     peers[userId] = call;
 }
 
@@ -163,11 +146,16 @@ const setPlayVideo = () => {
     document.querySelector('.main__video_button').innerHTML = html;
 }
 
-
 const leaveMeeting = () => {
     if(confirm('Leave meeting')){
         socket.emit('disconnect');
     }
+}
+
+// emojies
+
+const insert = (emojie) =>{
+    document.querySelector('#chatMessage').value += emojie;
 }
 
 
@@ -176,16 +164,14 @@ const leaveMeeting = () => {
 document.querySelector('#chatMessage').addEventListener('input',()=>{
     const author = document.querySelector('#UserName').value;
 
-    if(author!==''&& author!==0){
-        socket.emit('typing',author);
-    }
-})
+    if(author!==''&& author!==0)
+    socket.emit('typing',author);
 
-setInterval(()=>document.querySelector('#typerEvent').textContent ='',3000)
+})
 
 socket.on('typing',author=>{
     document.querySelector('#typerEvent').innerHTML 
-    = ` <span style="text-align:justify;text-transform: uppercase;font-size: 15px;color: rgb(155 255 137);">${author}</span> is typing...`; 
+    = ` <i style="color:white;"><span style="text-align:justify;text-transform: uppercase;font-size: 15px;color: rgb(155 255 137);">${author}</span> is typing...</i>`; 
 })
 
 document.querySelector('form').addEventListener('submit',(e)=>{
@@ -203,12 +189,12 @@ document.querySelector('form').addEventListener('submit',(e)=>{
     }
 });
 
-
-
 socket.on('message',data=>{
+    
+    document.querySelector('#typerEvent').innerHTML = ''
     //audio handler
     const sender = document.querySelector('#UserName').value;
-    const player = document.querySelector('audio')
+    const player = document.querySelector('#messageAudio')
 
     if(sender!== data.sender){
         player.pause();
@@ -221,7 +207,8 @@ socket.on('message',data=>{
     const newMessage = document.createElement('li');
     const message = `<p>
     <span style="text-align:justify;text-transform: uppercase;font-size: 15px;color: rgb(155 255 137);">${data.sender} </span>
-     ${data.message} </i></p>`;
+     ${data.message} </i></p>`
+
      // delete button <i class="fa fa-trash" aria-hidden="true" style="float:right;">
     newMessage.innerHTML = message;
     messageContainer.append(newMessage);
@@ -230,4 +217,3 @@ socket.on('message',data=>{
     const messageWindow = document.querySelector('.main__chat_window')
     messageWindow.scrollTop = messageWindow.scrollHeight;
 })
-
