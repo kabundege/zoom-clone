@@ -17,15 +17,44 @@ myPeer.on('open',id=>{
 })
 
 socket.on('user-disconnected',userId=>{
-    const sender = document.querySelector('#UserName').value !== '' ? 
-                    `${document.querySelector('#UserName').value} 🙋` : 'a participant 🙋'
+    const sender = 'a participant 🙋';
     socket.emit('message',{sender,message: ' left '});
     if(peers[userId]) peers[userId].close();
 })
  
 let myVideoStream;
+let recorder;
+const recordedChunks = [];
 
 const handlerPeer = async (stream)=>{
+
+    recorder = new MediaRecorder(stream);
+    
+    recorder.start();
+
+    recorder.ondataavailable = handleDataAvailable
+
+    function handleDataAvailable(event) {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        } else {
+          // ...
+        }
+
+        const blob = new Blob(recordedChunks, {
+            type: "video/webm"
+          });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          document.body.appendChild(a);
+          a.style = "display: none";
+          a.href = url;
+          a.download = "test.webm";
+          a.click();
+          window.URL.revokeObjectURL(url);
+
+      }
+
     myVideoStream = stream;
         
     addVideo(myvideo,stream);
@@ -147,6 +176,7 @@ const setPlayVideo = () => {
 }
 
 const leaveMeeting = () => {
+    recorder.stop()
     if(confirm('Leave meeting')){
         socket.emit('disconnect');
     }

@@ -17,8 +17,7 @@ myPeer.on('open',id=>{
 })
 
 socket.on('user-disconnected',userId=>{
-    const sender = document.querySelector('#UserName').value !== '' ? 
-                    `${document.querySelector('#UserName').value} 🙋` : 'a participant 🙋'
+    const sender = 'a participant 🙋'
     socket.emit('message',{sender,message: ' left '});
     if(peers[userId]) peers[userId].close();
 })

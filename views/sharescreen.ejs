@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoom</title>
+    <link rel="icon" href="flag.png" type="image/flag" sizes="16x16">
+    <title>Rwanda Connect</title>
     <script>
         const RoomId = "<%= roomId %>"
     </script>
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   <audio id="myAudio" autoplay ></audio>
    <audio id="messageAudio" src="swiftly.mp3"></audio>
    <audio id="newUserAudio" src="incoming.mp3"></audio>
       <div class="main">
@@ -51,7 +53,7 @@
                </div>
                <div class="main__controls__block">
                   <div class="main__controls__button">
-                     <span class="leave_meeting" onclick="leaveMeeting()">Leave Meeting</span>
+                     <span class="leave_meeting" onclick="leaveMeeting()">Stop Recording</span>
                   </div>
                </div>
             </div>
