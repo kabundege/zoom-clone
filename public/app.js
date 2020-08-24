@@ -149,6 +149,17 @@ const leaveMeeting = () => {
     }
 }
 
+let visibility = true
+
+const chats = () => {
+    visibility = !visibility
+    if(visibility){
+        document.querySelector('.main__right').style.display = 'flex'
+    }else{
+        document.querySelector('.main__right').style.display = 'none'
+    }
+}
+
 // emojies
 
 const insert = (emojie) =>{
