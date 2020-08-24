@@ -1,5 +1,5 @@
 const app =  require('./app');
-const server = require('http').Server(app);
+const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
@@ -8,7 +8,7 @@ const peerServer = ExpressPeerServer(server, {
 
 app.use('/peerjs', peerServer);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3030;
 
 server.listen(port,async ()=> {
     console.log(`running port ${port}`)
