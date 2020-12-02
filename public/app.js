@@ -47,7 +47,7 @@ const handlerPeer = async (stream)=>{
 // share screen
 
 const shareScreen = () =>{
-    document.location.href = `https://rdaconnect.herokuapp.com/${RoomId}?sharescreen=true`; 
+    document.location.href = `https://cinetie-meets.herokuapp.com/${RoomId}?sharescreen=true`; 
 }
 
 //////
